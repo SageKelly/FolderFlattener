@@ -1,6 +1,4 @@
-﻿using NAudio.Lame;
-using NAudio.Wave;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -15,14 +13,14 @@ namespace Folder_Flattener
     {
         static void Main(string[] wplFile)
         {
+            StreamReader sr = new StreamReader(wplFile[0]);
+            string musicPath = sr.ReadLine();
 
             XmlDocument xmlDoc = new XmlDocument();
-            string musicPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
             List<string> musicList = new List<string>();
 
             try
             {
-                xmlDoc.LoadXml(File.ReadAllText(wplFile[0]));
             }
             catch (Exception e)
             {
@@ -39,8 +37,9 @@ namespace Folder_Flattener
                     musicList.Add(mediaSource);
                 }
             }
-            //string destination = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Flattened Files";
-            string baseDestination = @"C:\Users\Kasha\Desktop\Flattened Files";
+
+            string baseDestination = sr.ReadLine();
+            sr.Close();
             if (!Directory.Exists(baseDestination))
             {
                 Directory.CreateDirectory(baseDestination);
