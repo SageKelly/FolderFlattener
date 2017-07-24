@@ -21,6 +21,8 @@ namespace Folder_Flattener
 
             try
             {
+                string playlistPath = sr.ReadLine();                
+                xmlDoc.Load(playlistPath);
             }
             catch (Exception e)
             {
