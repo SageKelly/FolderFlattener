@@ -21,7 +21,7 @@ namespace Folder_Flattener
 
             try
             {
-                string playlistPath = sr.ReadLine();                
+                string playlistPath = sr.ReadLine();
                 xmlDoc.Load(playlistPath);
             }
             catch (Exception e)
@@ -34,9 +34,11 @@ namespace Folder_Flattener
             {
                 for (int i = 0; i < mediaList.Count; i++)
                 {
-                    string mediaSource = mediaList.Item(i).Attributes.GetNamedItem("src").Value.Replace("..", musicPath);
+                    string firstHalf = mediaList.Item(i).Attributes.GetNamedItem("src").Value;
+                    string mediaSource = firstHalf.Replace("..\\", musicPath + "\\");
                     //Console.WriteLine(mediaSource);
-                    musicList.Add(mediaSource);
+                    if (!musicList.Contains(mediaSource))
+                        musicList.Add(mediaSource);
                 }
             }
 
@@ -49,13 +51,14 @@ namespace Folder_Flattener
 
             foreach (string file in musicList)
             {
+                string fullDestination = "";
                 try
                 {
                     int lastFileSlash = file.LastIndexOf('\\');
                     int lastInputSlash = baseDestination.LastIndexOf('\\');
 
 
-                    string fullDestination = baseDestination + "\\" + file.Substring(lastFileSlash + 1);
+                    fullDestination = baseDestination + "\\" + file.Substring(lastFileSlash + 1);
 
                     if (lastFileSlash < file.Length && lastInputSlash < baseDestination.Length)
                     {
@@ -75,7 +78,7 @@ namespace Folder_Flattener
                 }
                 catch (Exception E)
                 {
-                    WriteException(GetException(E));
+                    WriteException(GetException(E), fullDestination);
                     break;
                 }
             }
@@ -95,12 +98,17 @@ namespace Folder_Flattener
             }
         }
 
-        private static void WriteException(string message)
+        private static void WriteException(string message, string lastAttemptedDestination = null)
         {
             ConsoleColor prevColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Clear();
             Console.WriteLine("An error cccurred: {0}", message);
+            if (!string.IsNullOrEmpty(lastAttemptedDestination))
+            {
+                Console.WriteLine("Last attempted directory: {0}", lastAttemptedDestination);
+            }
+
             Console.ForegroundColor = prevColor;
             Console.ReadKey(true);
         }
