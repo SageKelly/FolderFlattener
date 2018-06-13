@@ -11,17 +11,19 @@ namespace Folder_Flattener
 {
     class Program
     {
+        private static List<string> ExceptionList = new List<string>();
+
         static void Main(string[] wplFile)
         {
             StreamReader sr = new StreamReader(wplFile[0]);
-            string musicPath = sr.ReadLine();
+            string musicPath = sr.ReadLine(); //1st ReadLine
 
             XmlDocument xmlDoc = new XmlDocument();
             List<string> musicList = new List<string>();
 
             try
             {
-                string playlistPath = sr.ReadLine();
+                string playlistPath = sr.ReadLine(); //2nd ReadLine
                 xmlDoc.Load(playlistPath);
             }
             catch (Exception e)
@@ -42,7 +44,7 @@ namespace Folder_Flattener
                 }
             }
 
-            string baseDestination = sr.ReadLine();
+            string baseDestination = sr.ReadLine(); //3rd ReadLine
             sr.Close();
             if (!Directory.Exists(baseDestination))
             {
@@ -54,6 +56,11 @@ namespace Folder_Flattener
                 string fullDestination = "";
                 try
                 {
+                    if (!File.Exists(file))
+                    {
+                        SaveMissingFiles(file);
+                        continue;
+                    }
                     int lastFileSlash = file.LastIndexOf('\\');
                     int lastInputSlash = baseDestination.LastIndexOf('\\');
 
@@ -83,6 +90,7 @@ namespace Folder_Flattener
                 }
             }
             Console.WriteLine("Writing Complete");
+            WriteMissingFiles();
             Console.ReadKey(true);
         }
 
@@ -95,6 +103,29 @@ namespace Folder_Flattener
             else
             {
                 return E.Message;
+            }
+        }
+
+        private static void SaveMissingFiles(string filePath)
+        {
+            ExceptionList.Add(filePath);
+        }
+
+        private static void WriteMissingFiles()
+        {
+            if (ExceptionList.Count > 0)
+            {
+                ConsoleColor origColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+
+                Console.WriteLine("I couldn't find some of your files. You might want to take a look at these:");
+                Console.ForegroundColor = ConsoleColor.Red;
+                foreach (string filePath in ExceptionList)
+                {
+                    Console.WriteLine("• {0}", filePath);
+                }
+
+                Console.ForegroundColor = origColor;
             }
         }
 
