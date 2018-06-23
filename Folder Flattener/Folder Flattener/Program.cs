@@ -38,7 +38,6 @@ namespace Folder_Flattener
                 {
                     string firstHalf = mediaList.Item(i).Attributes.GetNamedItem("src").Value;
                     string mediaSource = firstHalf.Replace("..\\", musicPath + "\\");
-                    //Console.WriteLine(mediaSource);
                     if (!musicList.Contains(mediaSource))
                         musicList.Add(mediaSource);
                 }
@@ -46,13 +45,19 @@ namespace Folder_Flattener
 
             string baseDestination = sr.ReadLine(); //3rd ReadLine
             sr.Close();
-            if (!Directory.Exists(baseDestination))
+
+            if (musicList.Count > 0)
             {
+
                 DriveInfo di = new DriveInfo(Directory.GetDirectoryRoot(baseDestination));
+
                 if (di.IsReady)
                 {
-                    Directory.CreateDirectory(baseDestination);
 
+                    if (!Directory.Exists(baseDestination))
+                    {
+                        Directory.CreateDirectory(baseDestination);
+                    }
                     foreach (string file in musicList)
                     {
                         string fullDestination = "";
@@ -76,7 +81,7 @@ namespace Folder_Flattener
                             if (!File.Exists(fullDestination))
                             {
                                 File.Copy(file, fullDestination);
-                                Console.WriteLine("Done");
+                                WriteMusicCopyCompletion();
                             }
                             else
                             {
@@ -93,13 +98,17 @@ namespace Folder_Flattener
                     }
                     Console.WriteLine("Writing Complete");
                     WriteMissingFiles();
-                    Console.ReadKey(true);
                 }
                 else
                 {
                     WriteException("I don't think you're using the right drive:", baseDestination);
                 }
             }
+            else
+            {
+                Console.WriteLine("Hmm...doesn't look like you had any music write. Are you sure you got the right playlist?");
+            }
+            Console.ReadKey(true);
         }
 
         private static string GetException(Exception E)
@@ -117,6 +126,14 @@ namespace Folder_Flattener
         private static void SaveMissingFiles(string filePath)
         {
             ExceptionList.Add(filePath);
+        }
+
+        private static void WriteMusicCopyCompletion()
+        {
+            ConsoleColor prevColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Done");
+            Console.ForegroundColor = prevColor;
         }
 
         private static void WriteMissingFiles()
