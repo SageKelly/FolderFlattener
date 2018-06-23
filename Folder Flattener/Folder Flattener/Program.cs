@@ -81,11 +81,11 @@ namespace Folder_Flattener
                             if (!File.Exists(fullDestination))
                             {
                                 File.Copy(file, fullDestination);
-                                WriteMusicCopyCompletion();
+                                WriteColoredMessage("Done", ConsoleColor.Green);
                             }
                             else
                             {
-                                Console.WriteLine("Cancelled: already exists.");
+                                WriteColoredMessage("Cancelled: already exists.",ConsoleColor.Yellow);
                             }
 
 
@@ -128,11 +128,11 @@ namespace Folder_Flattener
             ExceptionList.Add(filePath);
         }
 
-        private static void WriteMusicCopyCompletion()
+        private static void WriteColoredMessage(string message, ConsoleColor color, bool newLine = true)
         {
             ConsoleColor prevColor = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Done");
+            Console.ForegroundColor = color;
+            Console.Write("{0}{1}", message, newLine ? "\n" : "");
             Console.ForegroundColor = prevColor;
         }
 
