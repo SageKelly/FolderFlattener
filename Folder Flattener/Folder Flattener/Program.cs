@@ -106,7 +106,7 @@ namespace Folder_Flattener
             }
             else
             {
-                Console.WriteLine("Hmm...doesn't look like you had any music write. Are you sure you got the right playlist?");
+                Console.WriteLine("Hmm...doesn't look like you had any music written. Are you sure you got the right playlist?");
             }
             Console.ReadKey(true);
         }
