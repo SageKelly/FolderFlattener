@@ -13,10 +13,9 @@ namespace Folder_Flattener
     {
         private static List<string> ExceptionList = new List<string>();
 
-        static void Main(string[] wplFile)
+        static void Main(string[] zplFile)
         {
-            StreamReader sr = new StreamReader(wplFile[0]);
-            string musicPath = sr.ReadLine(); //1st ReadLine
+            StreamReader sr = new StreamReader(zplFile[0]);
 
             XmlDocument xmlDoc = new XmlDocument();
             List<string> musicList = new List<string>();
@@ -36,8 +35,7 @@ namespace Folder_Flattener
             {
                 for (int i = 0; i < mediaList.Count; i++)
                 {
-                    string firstHalf = mediaList.Item(i).Attributes.GetNamedItem("src").Value;
-                    string mediaSource = firstHalf.Replace("..\\", musicPath + "\\");
+                    string mediaSource = mediaList.Item(i).Attributes.GetNamedItem("src").Value;
                     if (!musicList.Contains(mediaSource))
                         musicList.Add(mediaSource);
                 }
